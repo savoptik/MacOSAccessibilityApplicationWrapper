@@ -1,0 +1,2 @@
+# MacOSAccessibilityApplicationWrapper
+This is wrapper of Accessibility Application functionality from ApplicationServices and CoreFoundation
