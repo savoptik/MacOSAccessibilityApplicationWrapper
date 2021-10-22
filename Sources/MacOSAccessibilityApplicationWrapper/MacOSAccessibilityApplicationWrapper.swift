@@ -29,7 +29,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         windows = nil
     }
 
-    subscript(index: Int) -> MacOSAccessibilityElementWrapper? {
+    public subscript(index: Int) -> MacOSAccessibilityElementWrapper? {
         get {
             if let w = windows {
                 return index >= 0 && index < w.count ? w[index] : nil
@@ -70,7 +70,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         return nil
     }
 
-    func accessibilityChildren() -> [Any]? {
+    public func accessibilityChildren() -> [Any]? {
         if let chl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXChildrenAttribute, andAxElement: axElementRef) {
             let childrenList: CFArray = chl as! CFArray
             let count = CFArrayGetCount(childrenList)
@@ -86,7 +86,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         return nil
     }
 
-    func accessibilityLabel() -> String {
+    public func accessibilityLabel() -> String {
         if let label = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXLabelValueAttribute, andAxElement: axElementRef),
         let s = MacOSAccessibilityElementWrapper.getString(FromPTR: label) {
             return s
@@ -95,7 +95,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         return "none"
     }
 
-    func accessibilityRole() -> NSAccessibility.Role? {
+    public func accessibilityRole() -> NSAccessibility.Role? {
         if let role = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXRoleAttribute, andAxElement: axElementRef),
         let s = MacOSAccessibilityElementWrapper.getString(FromPTR: role) {
             return NSAccessibility.Role.init(rawValue: s)
