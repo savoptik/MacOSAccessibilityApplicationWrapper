@@ -6,20 +6,28 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
     let windows: [MacOSAccessibilityElementWrapper]?
 
     public init(WithPID pid: Int32) throws {
+        print("test 1")
         let ax = AXUIElementCreateApplication(pid)
+        print("test 2")
         if let wl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXWindowsAttribute, andAxElement: ax) {
+            print("test 3")
             let windowList: CFArray = wl as! CFArray
+            print("test 4")
             let count = CFArrayGetCount(windowList)
+            print("test 5")
             var w: [MacOSAccessibilityElementWrapper] = []
             for item in 0..<count {
                 let axWindow: AXUIElement = CFArrayGetValueAtIndex(windowList, item) as! AXUIElement
                 w.append(MacOSAccessibilityElementWrapper(WithAXElement: axWindow))
             }
+            print("test 6")
             windows = w
             if w.isEmpty {
                 throw MAAWErrors.appDoesNotHaveWindows
             }
+            print("test 7")
             axElementRef = CFArrayGetValueAtIndex(windowList, 0) as! AXUIElement
+            print("test 8")
         }
         throw MAAWErrors.falePIDInitialise
     }
