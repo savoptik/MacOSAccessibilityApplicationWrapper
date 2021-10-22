@@ -57,9 +57,15 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         print("Test 3.1")
         var ret = UnsafeMutablePointer<CFTypeRef?>.allocate(capacity: 0)
         print("Test 3.2 \(attribute as CFString)")
-        print(AXUIElementCopyAttributeValue(ax, attribute as CFString, ret))
+        let err = AXUIElementCopyAttributeValue(ax, attribute as CFString, ret)
         print("Test 3.3")
-        return ret
+
+        if err.rawValue == 0 {
+            return ret
+        }
+
+        free(ret)
+        return nil
     }
 
     private static func getString(FromPTR ptr: UnsafeMutablePointer<CFTypeRef?>) -> String? {
