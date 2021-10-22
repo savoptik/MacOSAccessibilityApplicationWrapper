@@ -2,6 +2,7 @@ import Foundation
 import AppKit
 
 public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElementProtocol {
+
     let axElementRef: AXUIElement
     let windows: [MacOSAccessibilityElementWrapper]?
 
@@ -53,8 +54,11 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
     }
 
     private static func getAx(Attribute attribute: String, andAxElement ax: AXUIElement) -> UnsafeMutablePointer<CFTypeRef?>? {
+        print("Test 3.1")
         var ret = UnsafeMutablePointer<CFTypeRef?>.allocate(capacity: 0)
-        AXUIElementCopyAttributeValue(ax, attribute as CFString, ret)
+        print("Test 3.2 \(attribute as CFString)")
+        print(AXUIElementCopyAttributeValue(ax, attribute as CFString, ret))
+        print("Test 3.3")
         return ret
     }
 
