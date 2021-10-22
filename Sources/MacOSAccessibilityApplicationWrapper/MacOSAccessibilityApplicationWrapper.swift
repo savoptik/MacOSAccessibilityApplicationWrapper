@@ -12,14 +12,13 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         print("test 2")
         if let wl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXWindowsAttribute, andAxElement: ax) {
             print("test 3,")
-            let windowList = wl as! [Any]
+            let windowList = wl as! CFArray
             print("test 4")
-            let count = CFArrayGetCount(windowList as! CFArray)
+            let count = CFArrayGetCount(windowList)
             print("test 5")
             var w: [MacOSAccessibilityElementWrapper] = []
             for item in 0..<count {
-                let axWindow: AXUIElement = CFArrayGetValueAtIndex(
-                        windowList as! CFArray, item) as! AXUIElement
+                let axWindow: AXUIElement = CFArrayGetValueAtIndex(windowList, item) as! AXUIElement
                 w.append(MacOSAccessibilityElementWrapper(WithAXElement: axWindow))
             }
             print("test 6")
