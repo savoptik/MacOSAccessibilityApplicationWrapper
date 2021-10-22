@@ -11,7 +11,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         let ax = AXUIElementCreateApplication(pid)
         print("test 2")
         if let wl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXWindowsAttribute, andAxElement: ax) {
-            print("test 3, \(wl)")
+            print("test 3,")
             let windowList = wl as! UnsafeMutablePointer<CFArray>
             print("test 4")
             let count = CFArrayGetCount(windowList as! CFArray)
@@ -53,13 +53,13 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         }
     }
 
-    private static func getAx(Attribute attribute: String, andAxElement ax: AXUIElement) -> UnsafeMutablePointer<CFTypeRef?>? {
+    private static func getAx(Attribute attribute: String, andAxElement ax: AXUIElement) -> Any? {
         var ret = UnsafeMutablePointer<CFTypeRef?>.allocate(capacity: 1)
 
         let err = AXUIElementCopyAttributeValue(ax, attribute as CFString, ret)
 
         if err.rawValue == 0 {
-            return ret
+            return ret as Any
         }
 
         free(ret)
@@ -106,7 +106,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
 
     public func accessibilityLabel() -> String {
         if let label = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXLabelValueAttribute, andAxElement: axElementRef),
-        let s = MacOSAccessibilityElementWrapper.getString(FromPTR: label) {
+        let s = label as? String {
             return s
         }
 
@@ -115,7 +115,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
 
     public func accessibilityRole() -> NSAccessibility.Role? {
         if let role = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXRoleAttribute, andAxElement: axElementRef),
-        let s = MacOSAccessibilityElementWrapper.getString(FromPTR: role) {
+        let s = role as? String {
             return NSAccessibility.Role.init(rawValue: s)
         }
 
