@@ -63,6 +63,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         if err.rawValue == 0 {
             return ret
         }
+        print("Test 3.4")
 
         free(ret)
         return nil
