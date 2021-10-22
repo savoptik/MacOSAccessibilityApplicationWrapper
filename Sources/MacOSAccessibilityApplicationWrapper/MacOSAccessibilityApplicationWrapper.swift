@@ -32,7 +32,7 @@ let axWindow = axWindowRef as! AXUIElement
             }
             print("test 7")
             axElementRef = CFArrayGetValueAtIndex(
-                    windowList as! CFArray, 0) as! AXUIElement
+                    windowList, 0) as! AXUIElement
             print("test 8")
         }
         throw MAAWErrors.falePIDInitialise
