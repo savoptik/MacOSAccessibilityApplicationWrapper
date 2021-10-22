@@ -11,7 +11,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         let ax = AXUIElementCreateApplication(pid)
         print("test 2")
         if let wl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXWindowsAttribute, andAxElement: ax) {
-            print("test 3")
+            print("test 3, \(wl)")
             let windowList = wl as! UnsafeMutablePointer<CFArray>
             print("test 4")
             let count = CFArrayGetCount(windowList as! CFArray)
