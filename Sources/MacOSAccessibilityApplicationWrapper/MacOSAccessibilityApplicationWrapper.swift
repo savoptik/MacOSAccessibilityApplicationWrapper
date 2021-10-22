@@ -18,7 +18,9 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
             print("test 5")
             var w: [MacOSAccessibilityElementWrapper] = []
             for item in 0..<count {
+                print("test 5.1 \(count)")
                 let axWindow: AXUIElement = CFArrayGetValueAtIndex(windowList, item) as! AXUIElement
+                print("test 5.2")
                 w.append(MacOSAccessibilityElementWrapper(WithAXElement: axWindow))
             }
             print("test 6")
