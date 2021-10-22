@@ -48,6 +48,14 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         return ret
     }
 
+    private static func getString(FromPTR ptr: UnsafeMutablePointer<CFTypeRef?>) -> String? {
+        if let r: UnsafePointer<CFString> = ptr as? UnsafePointer<CFString>, let s: NSString = r as? NSString {
+            return s as String
+        }
+
+        return nil
+    }
+
     // NSAccessibilityElement protocole methods
 
     public func accessibilityFrame() -> NSRect {
@@ -63,6 +71,36 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
     }
 
     func accessibilityChildren() -> [Any]? {
+        if let chl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXChildrenAttribute, andAxElement: axElementRef) {
+            let childrenList: CFArray = chl as! CFArray
+            let count = CFArrayGetCount(childrenList)
+            var children: [MacOSAccessibilityElementWrapper] = []
+            for item in 0..<count {
+                let child: AXUIElement = CFArrayGetValueAtIndex(childrenList, item) as! AXUIElement
+                children.append(MacOSAccessibilityElementWrapper(WithAXElement: child))
+            }
+
+            return children
+        }
+
+        return nil
+    }
+
+    func accessibilityLabel() -> String {
+        if let label = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXLabelValueAttribute, andAxElement: axElementRef),
+        let s = MacOSAccessibilityElementWrapper.getString(FromPTR: label) {
+            return s
+        }
+
+        return "none"
+    }
+
+    func accessibilityRole() -> NSAccessibility.Role? {
+        if let role = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXRoleAttribute, andAxElement: axElementRef),
+        let s = MacOSAccessibilityElementWrapper.getString(FromPTR: role) {
+            return NSAccessibility.Role.init(rawValue: s)
+        }
+
         return nil
     }
 }
