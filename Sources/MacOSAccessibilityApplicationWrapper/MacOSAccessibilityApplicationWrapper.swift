@@ -13,7 +13,8 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         if let wl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXWindowsAttribute, andAxElement: ax) {
             print("test 3,")
             let windowList = wl as! CFArray
-            print("test 4")
+            let windowListTMP = wl as! [AXUIElement]
+            print("test 4 \(windowListTMP)")
             let count = CFArrayGetCount(windowList)
             print("test 5")
             var w: [MacOSAccessibilityElementWrapper] = []
