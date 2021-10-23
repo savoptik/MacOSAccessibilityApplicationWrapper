@@ -69,12 +69,16 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
     }
 
     public func accessibilityChildren() -> [Any]? {
+        print("test 1")
         if let chl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXChildrenAttribute, andAxElement: axElementRef) {
+            print("test 2")
             let childrenList = chl as! [AXUIElement]
+            print("test 2")
             var children: [MacOSAccessibilityElementWrapper] = []
             for item in childrenList {
                 children.append(MacOSAccessibilityElementWrapper(WithAXElement: item))
             }
+            print("test 3")
 
             return children
         }
