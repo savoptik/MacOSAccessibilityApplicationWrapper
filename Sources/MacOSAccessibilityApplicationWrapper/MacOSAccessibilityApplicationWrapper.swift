@@ -84,7 +84,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
     }
 
     public func accessibilityLabel() -> String {
-        if let label = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXLabelValueAttribute, andAxElement: axElementRef),
+        if let label = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXDescription, andAxElement: axElementRef),
         let s = label as? String {
             return s
         }
