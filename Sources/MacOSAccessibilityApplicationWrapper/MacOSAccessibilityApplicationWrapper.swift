@@ -19,6 +19,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
                 throw MAAWErrors.appDoesNotHaveWindows
             }
             axElementRef = windowList[0]
+            return
         }
         throw MAAWErrors.falePIDInitialise
     }
