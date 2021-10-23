@@ -1,7 +1,7 @@
 import Foundation
 import AppKit
 
-public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElementProtocol {
+public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
 
     let axElementRef: AXUIElement
     let windows: [MacOSAccessibilityElementWrapper]?
@@ -56,11 +56,11 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
 
     // NSAccessibilityElement protocole methods
 
-    public func accessibilityFrame() -> NSRect {
+    public override func accessibilityFrame() -> NSRect {
         return NSRect.zero
     }
 
-    public func accessibilityParent() -> Any? {
+    public override func accessibilityParent() -> Any? {
         if let parent = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXParentAttribute, andAxElement: axElementRef) {
             return MacOSAccessibilityElementWrapper(WithAXElement: parent as! AXUIElement)
         }
@@ -68,7 +68,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         return nil
     }
 
-    public func accessibilityChildren() -> [Any]? {
+    public override func accessibilityChildren() -> [Any]? {
         if let chl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXChildrenAttribute, andAxElement: axElementRef) {
             if let childrenList = chl as? [AXUIElement] {
                 var children: [MacOSAccessibilityElementWrapper] = []
@@ -83,7 +83,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         return nil
     }
 
-    public func accessibilityLabel() -> String {
+    public override func accessibilityLabel() -> String {
         if let label = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXDescription, andAxElement: axElementRef),
         let s = label as? String {
             return s
@@ -92,7 +92,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         return "none"
     }
 
-    public func accessibilityRole() -> NSAccessibility.Role? {
+    public override func accessibilityRole() -> NSAccessibility.Role? {
         if let role = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXRoleAttribute, andAxElement: axElementRef),
         let s = role as? String {
             return NSAccessibility.Role.init(rawValue: s)
