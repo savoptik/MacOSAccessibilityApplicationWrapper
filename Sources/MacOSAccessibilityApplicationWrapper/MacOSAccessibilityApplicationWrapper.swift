@@ -54,9 +54,38 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
         return nil
     }
 
+    private static func getAxValuePoint(axValue: AXValue) -> NSPoint {
+        var ret = NSPoint.zero
+        if AXValueGetValue(axValue, .cgPoint, &ret) {
+            return ret
+        }
+
+        return NSPoint.zero
+    }
+
+    private static func getAxValueSize(axValue: AXValue) -> NSSize {
+        var ret = NSSize.zero
+        if AXValueGetValue(axValue, .cgSize, &ret) {
+            return ret
+        }
+
+        return NSSize.zero
+    }
+
     // NSAccessibilityElement protocole methods
 
     public override func accessibilityFrame() -> NSRect {
+        // get location
+        if let loc = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXPositionAttribute, andAxElement: axElementRef) {
+            let av = loc as! AXValue
+            let point = MacOSAccessibilityElementWrapper.getAxValuePoint(axValue: av)
+            if let s = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXSizeAttribute, andAxElement: axElementRef) {
+                let sav = s as! AXValue
+                let size = MacOSAccessibilityElementWrapper.getAxValueSize(axValue: sav)
+                return NSRect.init(origin: point, size: size)
+            }
+        }
+
         return NSRect.zero
     }
 
@@ -100,4 +129,5 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
 
         return nil
     }
+
 }
