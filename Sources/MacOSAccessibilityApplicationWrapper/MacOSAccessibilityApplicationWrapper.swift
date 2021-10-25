@@ -1,25 +1,25 @@
 import Foundation
 import AppKit
 
-public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElementProtocol {
+public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
+
     let axElementRef: AXUIElement
     let windows: [MacOSAccessibilityElementWrapper]?
 
     public init(WithPID pid: Int32) throws {
         let ax = AXUIElementCreateApplication(pid)
         if let wl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXWindowsAttribute, andAxElement: ax) {
-            let windowList: CFArray = wl as! CFArray
-            let count = CFArrayGetCount(windowList)
+            let windowList = wl as! [AXUIElement]
             var w: [MacOSAccessibilityElementWrapper] = []
-            for item in 0..<count {
-                let axWindow: AXUIElement = CFArrayGetValueAtIndex(windowList, item) as! AXUIElement
-                w.append(MacOSAccessibilityElementWrapper(WithAXElement: axWindow))
+            for item in windowList {
+                w.append(MacOSAccessibilityElementWrapper(WithAXElement: item))
             }
             windows = w
             if w.isEmpty {
                 throw MAAWErrors.appDoesNotHaveWindows
             }
-            axElementRef = CFArrayGetValueAtIndex(windowList, 0) as! AXUIElement
+            axElementRef = windowList[0]
+            return
         }
         throw MAAWErrors.falePIDInitialise
     }
@@ -29,7 +29,7 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         windows = nil
     }
 
-    subscript(index: Int) -> MacOSAccessibilityElementWrapper? {
+    public subscript(index: Int) -> MacOSAccessibilityElementWrapper? {
         get {
             if let w = windows {
                 return index >= 0 && index < w.count ? w[index] : nil
@@ -42,15 +42,13 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         }
     }
 
-    private static func getAx(Attribute attribute: String, andAxElement ax: AXUIElement) -> UnsafeMutablePointer<CFTypeRef?>? {
-        var ret = UnsafeMutablePointer<CFTypeRef?>.allocate(capacity: 0)
-        AXUIElementCopyAttributeValue(ax, attribute as CFString, ret)
-        return ret
-    }
+    private static func getAx(Attribute attribute: String, andAxElement ax: AXUIElement) -> AnyObject? {
+        var ret: AnyObject?
 
-    private static func getString(FromPTR ptr: UnsafeMutablePointer<CFTypeRef?>) -> String? {
-        if let r: UnsafePointer<CFString> = ptr as? UnsafePointer<CFString>, let s: NSString = r as? NSString {
-            return s as String
+        let err = AXUIElementCopyAttributeValue(ax, attribute as CFString, &ret)
+
+        if err.rawValue == 0 {
+            return ret
         }
 
         return nil
@@ -58,11 +56,11 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
 
     // NSAccessibilityElement protocole methods
 
-    public func accessibilityFrame() -> NSRect {
+    public override func accessibilityFrame() -> NSRect {
         return NSRect.zero
     }
 
-    public func accessibilityParent() -> Any? {
+    public override func accessibilityParent() -> Any? {
         if let parent = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXParentAttribute, andAxElement: axElementRef) {
             return MacOSAccessibilityElementWrapper(WithAXElement: parent as! AXUIElement)
         }
@@ -70,34 +68,33 @@ public class MacOSAccessibilityElementWrapper : NSObject, NSAccessibilityElement
         return nil
     }
 
-    func accessibilityChildren() -> [Any]? {
+    public override func accessibilityChildren() -> [Any]? {
         if let chl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXChildrenAttribute, andAxElement: axElementRef) {
-            let childrenList: CFArray = chl as! CFArray
-            let count = CFArrayGetCount(childrenList)
-            var children: [MacOSAccessibilityElementWrapper] = []
-            for item in 0..<count {
-                let child: AXUIElement = CFArrayGetValueAtIndex(childrenList, item) as! AXUIElement
-                children.append(MacOSAccessibilityElementWrapper(WithAXElement: child))
-            }
+            if let childrenList = chl as? [AXUIElement] {
+                var children: [MacOSAccessibilityElementWrapper] = []
+                for item in childrenList {
+                    children.append(MacOSAccessibilityElementWrapper(WithAXElement: item))
+                }
 
-            return children
-        }
+                return children
+            }
+            }
 
         return nil
     }
 
-    func accessibilityLabel() -> String {
-        if let label = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXLabelValueAttribute, andAxElement: axElementRef),
-        let s = MacOSAccessibilityElementWrapper.getString(FromPTR: label) {
+    public override func accessibilityLabel() -> String {
+        if let label = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXDescription, andAxElement: axElementRef),
+        let s = label as? String {
             return s
         }
 
         return "none"
     }
 
-    func accessibilityRole() -> NSAccessibility.Role? {
+    public override func accessibilityRole() -> NSAccessibility.Role? {
         if let role = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXRoleAttribute, andAxElement: axElementRef),
-        let s = MacOSAccessibilityElementWrapper.getString(FromPTR: role) {
+        let s = role as? String {
             return NSAccessibility.Role.init(rawValue: s)
         }
 
