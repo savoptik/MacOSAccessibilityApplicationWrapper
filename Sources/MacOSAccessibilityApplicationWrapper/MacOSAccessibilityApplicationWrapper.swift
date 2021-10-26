@@ -130,4 +130,12 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
         return nil
     }
 
+    public override func accessibilityHelp() -> String? {
+        if let help = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXHelpAttribute, andAxElement: axElementRef),
+           let s = help as? String {
+            return s
+        }
+
+        return nil
+    }
 }
