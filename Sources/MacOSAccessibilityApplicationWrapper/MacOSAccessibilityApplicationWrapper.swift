@@ -72,6 +72,21 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
         return NSSize.zero
     }
 
+    private func childrenFor(attribute: String) -> [Any]? {
+        if let chl = MacOSAccessibilityElementWrapper.getAx(Attribute: attribute, andAxElement: axElementRef) {
+            if let childrenList = chl as? [AXUIElement] {
+                var children: [MacOSAccessibilityElementWrapper] = []
+                for item in childrenList {
+                    children.append(MacOSAccessibilityElementWrapper(WithAXElement: item))
+                }
+
+                return children
+            }
+        }
+
+        return nil
+    }
+
     // NSAccessibilityElement protocole methods
 
     public override func accessibilityFrame() -> NSRect {
@@ -98,18 +113,7 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
     }
 
     public override func accessibilityChildren() -> [Any]? {
-        if let chl = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXChildrenAttribute, andAxElement: axElementRef) {
-            if let childrenList = chl as? [AXUIElement] {
-                var children: [MacOSAccessibilityElementWrapper] = []
-                for item in childrenList {
-                    children.append(MacOSAccessibilityElementWrapper(WithAXElement: item))
-                }
-
-                return children
-            }
-            }
-
-        return nil
+return childrenFor(attribute: kAXChildrenAttribute)
     }
 
     public override func accessibilityLabel() -> String {
@@ -137,5 +141,13 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
         }
 
         return nil
+    }
+
+    public override func accessibilitySelectedChildren() -> [Any]? {
+        return childrenFor(attribute: kAXSelectedChildrenAttribute)
+    }
+
+    public override func accessibilityVisibleChildren() -> [Any]? {
+        return childrenFor(attribute: kAXVisibleChildrenAttribute)
     }
 }
