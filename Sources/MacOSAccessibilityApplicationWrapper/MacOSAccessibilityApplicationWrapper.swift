@@ -159,4 +159,13 @@ return childrenFor(attribute: kAXChildrenAttribute)
 
         return false
     }
+
+    public override func accessibilityRoleDescription() -> String? {
+        if let rd = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXRoleDescriptionAttribute, andAxElement: axElementRef),
+           let roleDescription = rd as? String {
+            return roleDescription
+        }
+
+        return nil
+    }
 }
