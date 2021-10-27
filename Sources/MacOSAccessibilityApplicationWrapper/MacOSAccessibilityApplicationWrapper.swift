@@ -177,4 +177,13 @@ return childrenFor(attribute: kAXChildrenAttribute)
 
         return false
     }
+
+    public override func accessibilityIndex() -> Int {
+        if let ai = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXIndexAttribute, andAxElement: axElementRef),
+           let index = ai as? Int {
+            return index
+        }
+
+        return -1
+    }
 }
