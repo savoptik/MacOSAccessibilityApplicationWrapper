@@ -168,4 +168,13 @@ return childrenFor(attribute: kAXChildrenAttribute)
 
         return nil
     }
+
+    public override func isAccessibilityFocused() -> Bool {
+        if let iaf = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXFocusedAttribute, andAxElement: axElementRef),
+           let isAxFocused = iaf as? Bool {
+            return isAxFocused
+        }
+
+        return false
+    }
 }
