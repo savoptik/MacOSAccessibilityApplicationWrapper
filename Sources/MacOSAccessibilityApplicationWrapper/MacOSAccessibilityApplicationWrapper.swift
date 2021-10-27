@@ -113,12 +113,12 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
     }
 
     public override func accessibilityChildren() -> [Any]? {
-return childrenFor(attribute: kAXChildrenAttribute)
+        return childrenFor(attribute: kAXChildrenAttribute)
     }
 
     public override func accessibilityLabel() -> String {
         if let label = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXDescription, andAxElement: axElementRef),
-        let s = label as? String {
+           let s = label as? String {
             return s
         }
 
@@ -127,7 +127,7 @@ return childrenFor(attribute: kAXChildrenAttribute)
 
     public override func accessibilityRole() -> NSAccessibility.Role? {
         if let role = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXRoleAttribute, andAxElement: axElementRef),
-        let s = role as? String {
+           let s = role as? String {
             return NSAccessibility.Role.init(rawValue: s)
         }
 
@@ -185,5 +185,14 @@ return childrenFor(attribute: kAXChildrenAttribute)
         }
 
         return -1
+    }
+
+    public override func isAccessibilitySelected() -> Bool {
+        if let ias = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXSelectedAttribute, andAxElement: axElementRef),
+           let isAxSelected = ias as? Bool {
+            return isAxSelected
+        }
+
+        return false
     }
 }
