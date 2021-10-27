@@ -150,4 +150,13 @@ return childrenFor(attribute: kAXChildrenAttribute)
     public override func accessibilityVisibleChildren() -> [Any]? {
         return childrenFor(attribute: kAXVisibleChildrenAttribute)
     }
+
+    public override func isAccessibilityEnabled() -> Bool {
+        if let e = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXEnabledAttribute, andAxElement: axElementRef),
+           let enabled = e as? Bool {
+            return enabled
+        }
+
+        return false
+    }
 }
