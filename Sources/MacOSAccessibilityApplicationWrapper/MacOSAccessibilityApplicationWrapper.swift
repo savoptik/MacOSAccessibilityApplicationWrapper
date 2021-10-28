@@ -195,4 +195,12 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
 
         return false
     }
+
+    public override func accessibilityValue() -> Any?  {
+        if let val = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXValueAttribute, andAxElement: axElementRef) {
+            return val
+        }
+
+        return nil
+    }
 }
