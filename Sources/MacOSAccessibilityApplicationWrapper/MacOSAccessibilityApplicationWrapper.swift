@@ -228,4 +228,21 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
 
         return nil
     }
+
+    public override func accessibilityOrientation() -> NSAccessibilityOrientation {
+        if let o = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXOrientationAttribute, andAxElement: axElementRef) {
+            if let axOrintation = o as? String {
+                switch axOrintation {
+                case kAXVerticalOrientationValue:
+                    return .vertical
+                case kAXHorizontalOrientationValue:
+                    return .horizontal
+                default:
+                    return .unknown
+                }
+            }
+        }
+
+        return .unknown
+    }
 }
