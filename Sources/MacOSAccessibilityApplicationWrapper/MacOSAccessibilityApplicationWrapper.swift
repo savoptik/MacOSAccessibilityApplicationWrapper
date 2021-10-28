@@ -219,4 +219,13 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
 
         return nil
     }
+
+    public override func accessibilityWindow() -> Any? {
+        if let window = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXWindowAttribute, andAxElement: axElementRef) {
+            let ax = window as! AXUIElement
+            return MacOSAccessibilityElementWrapper(WithAXElement: ax)
+        }
+
+        return nil
+    }
 }
