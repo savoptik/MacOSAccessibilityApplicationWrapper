@@ -203,4 +203,20 @@ public class MacOSAccessibilityElementWrapper : NSAccessibilityElement {
 
         return nil
     }
+
+    public override func accessibilityMaxValue() -> Any? {
+        if let mv = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXMaxValueAttribute, andAxElement: axElementRef) {
+            return mv
+        }
+
+        return nil
+    }
+
+    public override func accessibilityMinValue() -> Any? {
+        if let mv = MacOSAccessibilityElementWrapper.getAx(Attribute: kAXMinValueAttribute, andAxElement: axElementRef) {
+            return mv
+        }
+
+        return nil
+    }
 }
